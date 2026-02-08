@@ -5,7 +5,7 @@ export default function Header() {
     <header className={styles.appHeader}>
       <h1>
         {" "}
-        <Link to="/">🎙️ Podcast App</Link>
+        <Link to="/">🎙️ Podcast-Hub</Link>
       </h1>
     </header>
   );
