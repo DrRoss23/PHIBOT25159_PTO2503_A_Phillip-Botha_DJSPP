@@ -1,0 +1,52 @@
+.episodeCard {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--card-bg, #f4f4f4);
+  transition: background-color 0.2s ease;
+}
+
+.episodeCard:hover {
+  background-color: var(--card-hover-bg, #eaeaea);
+}
+
+.episodeCover {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.episodeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.episodeTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.episodeDesc {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.playButton {
+  align-self: flex-start;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: #111;
+  color: #fff;
+}
+
+.playButton:hover {
+  opacity: 0.85;
+}
