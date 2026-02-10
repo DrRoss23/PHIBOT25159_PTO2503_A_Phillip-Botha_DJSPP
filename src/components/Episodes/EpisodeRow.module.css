@@ -50,3 +50,18 @@
 .playButton:hover {
   opacity: 0.85;
 }
+
+/* Card-level favourite button */
+.episodeCard {
+  position: relative;
+}
+
+.favouriteButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}

@@ -92,6 +92,8 @@ export default function PodcastDetail({ podcast, genres }) {
                 episode={{
                   ...ep,
                   _key: `${podcast.id}-${selectedSeasonIndex}-${ep.episode}`,
+                  showTitle: podcast.title,
+                  seasonIndex: selectedSeasonIndex,
                 }}
                 index={index}
                 coverImage={season.image}
