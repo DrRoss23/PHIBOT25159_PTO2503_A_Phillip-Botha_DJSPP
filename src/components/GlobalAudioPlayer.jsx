@@ -9,6 +9,7 @@ export default function GlobalAudioPlayer() {
     pause,
     resume,
     seek,
+    stop,
   } = useAudioPlayer();
 
   if (!currentEpisode) return null;
@@ -54,11 +55,14 @@ export default function GlobalAudioPlayer() {
           {Math.floor(currentTime)}s / {Math.floor(duration)}s
         </span>
 
-        {isPlaying ? (
-          <button onClick={pause}>Pause</button>
-        ) : (
-          <button onClick={resume}>Play</button>
-        )}
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {isPlaying ? (
+            <button onClick={pause}>Pause</button>
+          ) : (
+            <button onClick={resume}>Play</button>
+          )}
+          <button onClick={stop}>Stop</button>
+        </div>
       </div>
     </div>
   );

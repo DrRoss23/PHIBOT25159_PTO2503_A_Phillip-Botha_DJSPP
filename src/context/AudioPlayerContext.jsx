@@ -62,6 +62,15 @@ export function AudioPlayerProvider({ children }) {
       .catch((err) => console.error("Audio playback failed:", err));
   };
 
+  const stop = () => {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    setIsPlaying(false);
+    setCurrentEpisode(null);
+    setCurrentTime(0);
+    setDuration(0);
+  };
+
   const seek = (time) => {
     audioRef.current.currentTime = time;
     setCurrentTime(time);
@@ -78,6 +87,7 @@ export function AudioPlayerProvider({ children }) {
         playEpisode,
         pause,
         resume,
+        stop,
         seek,
       }}
     >
