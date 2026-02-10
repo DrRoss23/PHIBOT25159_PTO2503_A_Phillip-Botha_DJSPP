@@ -7,6 +7,7 @@ import {
   Loading,
   Error,
 } from "../components";
+import RecommendedCarousel from "../components/RecommendedCarousel";
 import styles from "./Home.module.css";
 import { genres } from "../data";
 import { PodcastContext } from "../context/PodcastContext";
@@ -28,6 +29,10 @@ import { useContext } from "react";
 export default function Home() {
   const { podcasts, loading, error } = useContext(PodcastContext);
 
+  const recommendedPodcasts = podcasts
+    ? [...podcasts].sort(() => 0.5 - Math.random()).slice(0, 10)
+    : [];
+
   return (
     <main className={styles.main}>
       <section className={styles.controls}>
@@ -43,6 +48,7 @@ export default function Home() {
 
       {!loading && !error && (
         <>
+          <RecommendedCarousel podcasts={recommendedPodcasts} />
           <PodcastGrid />
           <Pagination />
         </>
