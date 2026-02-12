@@ -13,7 +13,7 @@ import styles from "./RecommendedCarousel.module.css";
  *
  * @returns {JSX.Element}
  */
-export default function RecommendedCarousel({ podcasts }) {
+export default function RecommendedCarousel({ podcasts, genres }) {
   const trackRef = useRef(null);
 
   // Start the scroll position at a safe midpoint so looping feels natural
@@ -93,6 +93,19 @@ export default function RecommendedCarousel({ podcasts }) {
               className={styles.image}
             />
             <h3 className={styles.title}>{podcast.title}</h3>
+            {podcast.genres && podcast.genres.length > 0 && genres && (
+              <div className={styles.genres}>
+                {podcast.genres.map((genreId, i) => {
+                  const genreName =
+                    genres.find((g) => g.id === genreId)?.title || genreId;
+                  return (
+                    <span key={i} className={styles.genreBadge}>
+                      {genreName}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
           </Link>
         ))}
       </div>

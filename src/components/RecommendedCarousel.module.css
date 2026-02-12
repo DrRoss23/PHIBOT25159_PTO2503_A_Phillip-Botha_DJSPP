@@ -50,3 +50,22 @@
   margin-top: 0.4rem;
   font-size: 0.95rem;
 }
+
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.genreBadge {
+  background-color: var(--badge-bg);
+  color: var(--badge-text);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}

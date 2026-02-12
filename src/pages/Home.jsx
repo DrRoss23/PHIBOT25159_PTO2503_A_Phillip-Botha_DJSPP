@@ -48,7 +48,7 @@ export default function Home() {
 
       {!loading && !error && (
         <>
-          <RecommendedCarousel podcasts={recommendedPodcasts} />
+          <RecommendedCarousel podcasts={recommendedPodcasts} genres={genres} />
           <PodcastGrid />
           <Pagination />
         </>
