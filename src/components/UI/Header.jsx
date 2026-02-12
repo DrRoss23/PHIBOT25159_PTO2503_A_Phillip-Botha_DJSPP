@@ -1,5 +1,6 @@
 import styles from "./Header.module.css";
 import { Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 export default function Header() {
   return (
     <header className={styles.appHeader}>
@@ -7,8 +8,9 @@ export default function Header() {
         <Link to="/">🎙️ Podcast-Hub</Link>
       </h1>
 
-      <nav>
+      <nav className={styles.nav}>
         <Link to="/favourites">❤️ Favourites</Link>
+        <ThemeToggle />
       </nav>
     </header>
   );

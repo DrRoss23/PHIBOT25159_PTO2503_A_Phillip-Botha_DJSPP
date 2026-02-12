@@ -3,12 +3,15 @@
   gap: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  background-color: var(--card-bg, #f4f4f4);
-  transition: background-color 0.2s ease;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .episodeCard:hover {
-  background-color: var(--card-hover-bg, #eaeaea);
+  background-color: var(--surface-color);
 }
 
 .episodeCover {
@@ -32,7 +35,7 @@
 
 .episodeDesc {
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -43,8 +46,8 @@
   border-radius: 4px;
   border: none;
   cursor: pointer;
-  background-color: #111;
-  color: #fff;
+  background-color: var(--text-primary);
+  color: var(--bg-color);
 }
 
 .playButton:hover {

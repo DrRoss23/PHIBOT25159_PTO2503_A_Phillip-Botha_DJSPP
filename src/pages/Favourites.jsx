@@ -47,7 +47,7 @@ export default function Favourites() {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div style={{ padding: "1rem", color: "var(--text-primary)" }}>
       <h2>Favourites</h2>
 
       <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
@@ -71,11 +71,14 @@ export default function Favourites() {
             }
           }}
           style={{
-            padding: "0.4rem 0.8rem",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            background: "#fff",
+            padding: "0.5rem 1rem",
+            borderRadius: "999px",
+            border: "1px solid var(--border-color)",
+            background: "var(--card-bg)",
+            color: "var(--text-primary)",
             cursor: "pointer",
+            fontWeight: 600,
+            transition: "background-color 0.3s ease, border-color 0.3s ease",
           }}
         >
           Clear all favourites
@@ -95,7 +98,8 @@ export default function Favourites() {
                   gap: "1rem",
                   padding: "0.75rem",
                   marginBottom: "0.5rem",
-                  background: "#f4f4f4",
+                  background: "var(--card-bg)",
+                  border: "1px solid var(--border-color)",
                   borderRadius: "6px",
                   alignItems: "center",
                 }}
