@@ -2,6 +2,8 @@ import { createContext, useContext, useRef, useState, useEffect } from "react";
 
 const AudioPlayerContext = createContext(null);
 
+const STORAGE_KEY = "djs_listening_history";
+
 export function AudioPlayerProvider({ children }) {
   const audioRef = useRef(new Audio());
 
@@ -10,12 +12,43 @@ export function AudioPlayerProvider({ children }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  // --- Listening History State ---
+  const [listeningHistory, setListeningHistory] = useState(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  });
+
+  // Persist listening history
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(listeningHistory));
+  }, [listeningHistory]);
+
   // keep time + duration in sync
   useEffect(() => {
     const audio = audioRef.current;
 
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
+
+      if (!currentEpisode?.key) return;
+
+      const key = currentEpisode.key;
+
+      setListeningHistory((prev) => {
+        const existing = prev[key] || {};
+
+        const completed =
+          audio.duration > 0 && audio.currentTime >= audio.duration * 0.95;
+
+        return {
+          ...prev,
+          [key]: {
+            progress: audio.currentTime,
+            duration: audio.duration,
+            completed,
+          },
+        };
+      });
     };
 
     const handleLoadedMetadata = () => {
@@ -29,22 +62,36 @@ export function AudioPlayerProvider({ children }) {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
-  }, []);
+  }, [currentEpisode]);
 
   const playEpisode = (episode) => {
     if (!episode?.file) return;
 
-    // derive a stable episode identity
     const episodeKey = episode.key;
 
+    const audio = audioRef.current;
+
     if (currentEpisode?.key !== episodeKey) {
-      audioRef.current.src = episode.file;
-      audioRef.current.load();
+      audio.src = episode.file;
+      audio.load();
       setCurrentEpisode({ ...episode, key: episodeKey });
-      setCurrentTime(0);
+
+      // Resume logic
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const history = stored ? JSON.parse(stored) : {};
+      const saved = history[episodeKey];
+
+      if (saved?.progress && !saved.completed) {
+        const handleResume = () => {
+          audio.currentTime = saved.progress;
+          audio.removeEventListener("loadedmetadata", handleResume);
+        };
+
+        audio.addEventListener("loadedmetadata", handleResume);
+      }
     }
 
-    audioRef.current
+    audio
       .play()
       .then(() => setIsPlaying(true))
       .catch((err) => console.error("Audio playback failed:", err));
@@ -76,6 +123,11 @@ export function AudioPlayerProvider({ children }) {
     setCurrentTime(time);
   };
 
+  const resetListeningHistory = () => {
+    setListeningHistory({});
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
   return (
     <AudioPlayerContext.Provider
       value={{
@@ -89,6 +141,8 @@ export function AudioPlayerProvider({ children }) {
         resume,
         stop,
         seek,
+        listeningHistory,
+        resetListeningHistory,
       }}
     >
       {children}

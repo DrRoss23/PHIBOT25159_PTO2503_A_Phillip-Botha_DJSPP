@@ -15,11 +15,23 @@ import styles from "./EpisodeRow.module.css";
  * @returns {JSX.Element}
  */
 export default function EpisodeRow({ episode, index, coverImage }) {
-  const { playEpisode, currentEpisode, isPlaying } = useAudioPlayer();
+  const { playEpisode, currentEpisode, isPlaying, listeningHistory } =
+    useAudioPlayer();
   const { isFavourited, addFavourite, removeFavourite } = useFavourites();
 
   const isCurrent = currentEpisode?.key === episode._key;
   const favourited = isFavourited(episode._key);
+
+  // Listening progress
+  const episodeHistory = listeningHistory?.[episode._key];
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
 
   const toggleFavourite = () => {
     if (favourited) {
@@ -51,6 +63,32 @@ export default function EpisodeRow({ episode, index, coverImage }) {
         </p>
 
         <p className={styles.episodeDesc}>{episode.description}</p>
+
+        {episodeHistory?.completed && (
+          <p
+            style={{
+              fontSize: "0.85rem",
+              marginTop: "0.25rem",
+              color: "var(--text-secondary)",
+            }}
+          >
+            ✅ Completed
+          </p>
+        )}
+
+        {episodeHistory &&
+          !episodeHistory.completed &&
+          episodeHistory.progress >= 3 && (
+            <p
+              style={{
+                fontSize: "0.85rem",
+                marginTop: "0.25rem",
+                color: "var(--text-secondary)",
+              }}
+            >
+              ▶ Resume at {formatTime(episodeHistory.progress)}
+            </p>
+          )}
 
         <div
           style={{
