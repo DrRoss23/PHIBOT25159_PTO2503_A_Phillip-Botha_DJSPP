@@ -1,94 +1,242 @@
-# DJS05 – React Podcast App with Routing, Detail Pages, and Context State
+# 🎙️ DJSPP – React Podcast Application (Production Version)
 
-This project is a **React-based podcast explorer** that builds upon DJS04 by adding **multi-page routing**, **podcast detail views**, and further improving the use of shared context state and component organization.
+## 🌍 Live Demo
 
-## Key Features
+🔗 https://phibot-25159-pto-2503-a-phillip-bot.vercel.app/
 
-- **Routing (React Router DOM)**  
-  Uses `react-router-dom` for navigation between pages:
+---
 
-  - `/` – Home page with search, filters, sorting, and pagination
-  - `/show/:id` – Detailed view of a selected podcast, including episode listing
+## 📌 Project Overview
 
-- **Podcast Context (Global State)**  
-  Provides shared state using `PodcastContext`:
+This project is a **fully featured React podcast application** built with **React 18 + Vite**.  
+It began as a routing and context-based podcast explorer and evolved into a production-ready application featuring:
 
-  - Manages full podcast dataset, filters, search, sort, pagination
-  - Makes data accessible across pages
+- Global persistent audio playback
+- Favourites system with grouping and sorting
+- Listening progress tracking (stretch goals completed)
+- Recommended shows carousel
+- Dark / Light theme system
+- SPA routing with refresh safety
+- LocalStorage persistence
+- Deployment-ready configuration
 
-- **Search**
+This project demonstrates strong architectural planning, global state management, UI scalability, and production polish.
 
-  - Case-insensitive search by podcast title
-  - Updates results dynamically
+---
 
-- **Sort Options**
+# 🚀 Core Features
 
-  - Default
-  - Newest
-  - Oldest
-  - Title A → Z
-  - Title Z → A
+## 🎵 Global Audio Player
 
-- **Genre Filter**
+- Single global `HTMLAudioElement`
+- Persistent across navigation
+- Play / Pause / Seek
+- Stop & dismiss control
+- Continues playback between routes
+- Handles browser playback constraints safely
 
-  - Filters podcasts by genre
-  - Genre data loaded from static source
+Audio is managed through a global `AudioPlayerContext` to ensure a single source of truth.
 
-- **Pagination**
+---
 
-  - Dynamic per-page item calculation based on screen size
-  - Defaults to 10 per page on smaller screens
+## ❤️ Favourites System
 
-- **Detail View**
-  - Fetches full podcast data when visiting `/show/:id`
-  - Displays title, image, description, genre tags, and seasons
+- Add / Remove episode favourites
+- Grouped by show
+- Sort A–Z / Z–A
+- Sort by date added (Newest / Oldest)
+- Displays episode metadata + artwork
+- Clear all favourites
+- Persisted via LocalStorage
 
-## Project Structure
+Favourites are stored independently of API refetching to ensure instant rendering.
+
+---
+
+## ⏱️ Listening Progress (Stretch Goals Completed)
+
+- Saves timestamp per episode
+- Resume from exact position
+- Marks episodes as Completed
+- Resume indicator when progress ≥ 3 seconds
+- Precise completion detection (within 1 second of duration)
+- Global Reset Progress control
+- Stored in `djs_listening_history` (LocalStorage)
+
+Listening progress is integrated directly into the global audio system without introducing additional global layers.
+
+---
+
+## 🎠 Recommended Shows Carousel
+
+- Horizontally scrollable
+- Arrow navigation
+- Forward-only looping for stability
+- Randomised selection
+- Genre badges mapped from ID → title
+- Navigates correctly to show detail pages
+
+Implemented without third-party carousel libraries to maintain clarity and control.
+
+---
+
+## 🌓 Theme System
+
+- Light / Dark mode toggle
+- Stored in LocalStorage
+- Uses semantic CSS variables
+- No hardcoded colours
+- Fully responsive across all views
+
+Theme switching updates root-level CSS tokens using `data-theme`.
+
+---
+
+# 🧠 Architecture Highlights
+
+## Global State Layers
+
+- `AudioPlayerContext` → Playback + Listening Progress
+- `FavouritesContext` → Favourite management
+- `ThemeContext` → UI theme
+- `PodcastContext` → Core podcast data, filtering & sorting
+
+This layered context structure avoids prop drilling and keeps responsibilities clearly separated.
+
+---
+
+## Episode Identity Strategy
+
+To avoid duplicate playback state issues caused by shared API audio URLs, a globally unique episode key is generated:
 
 ```
-/src
-│
-├── /api
-│ └── fetchPata.js # Fetch podcasts and single podcast
-│
-├── /components
-│ ├── Filters/ # SearchBar, SortSelect, GenreFilter
-│ ├── Podcasts/ # PodcastCard, PodcastGrid, PodcastDetail
-│ └── UI/ # Header, Pagination, Loading, Error, GenreTags
-│
-├── /context
-│ └── PodcastContext.jsx # Context provider for global state
-|
-├── /pages
-│ ├── Home.jsx # Home page with all podcasts and controls
-│ └── ShowDetail.jsx # Detail view for a selected podcast
-│
-├── /styles
-│ └── \*.module.css # CSS Modules used throughout
-│
-├── App.jsx # Main app with routing
-└── main.jsx # React entry point
-└── data.js # Static genre ID to label mapping
+showId-seasonIndex-episodeNumber
 ```
 
-## How It Works
+This key is used for:
 
-- On initial load, all podcast data is fetched once via `PodcastProvider`.
-- Components like `SearchBar`, `GenreFilter`, and `SortSelect` update shared context state.
-- Filtered and sorted results are paginated and displayed in `PodcastGrid`.
-- When a podcast card is clicked, the app navigates to `/show/:id`, fetching full podcast details.
+- Playback comparison
+- Listening progress storage
+- Resume logic
 
-## How to Run
+---
 
-1. Clone the repo or download the project files.
-2. Install dependencies:
+## Browser Audio Handling
 
-   ```bash
-   npm install
-   ```
+Playback logic safely handles:
 
-3. Start the development server:
-   ```
-    npm run dev
-   ```
-4. Visit http://localhost:5173 in your browser.
+- `audio.load()` before playback
+- Promise-based `audio.play()`
+- Metadata timing
+- Resume race conditions
+
+---
+
+# 📄 Routing
+
+Using **React Router DOM**:
+
+- `/` – Home
+- `/show/:id` – Show detail
+- `/favourites` – Favourites library
+
+SPA routing is configured for refresh safety in production.
+
+---
+
+# 🧱 Tech Stack
+
+- React 18
+- Vite
+- React Router DOM
+- Context API
+- JavaScript (ES Modules)
+- CSS Modules
+- Podcast API → https://podcast-api.netlify.app
+
+---
+
+# 📂 Project Structure
+
+```
+src/
+├── api/
+├── components/
+│   ├── UI/
+│   ├── Podcasts/
+│   └── Episodes/
+├── context/
+│   ├── AudioPlayerContext.jsx
+│   ├── FavouritesContext.jsx
+│   ├── ThemeContext.jsx
+│   └── PodcastContext.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── ShowDetail.jsx
+│   └── Favourites.jsx
+├── styles/
+├── App.jsx
+└── main.jsx
+```
+
+---
+
+# ⚙️ Setup & Running Locally
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start development server
+
+```bash
+npm run dev
+```
+
+Visit:
+
+```
+http://localhost:5173
+```
+
+### Production build
+
+```bash
+npm run build
+npm run preview
+```
+
+## https://phibot-25159-pto-2503-a-phillip-bot.vercel.app/
+
+# 🌍 Deployment (Vercel)
+
+1. Push project to GitHub
+2. Import into Vercel
+3. Framework preset: **Vite**
+4. Build command: `npm run build`
+5. Output directory: `dist`
+6. Add SPA rewrite configuration if needed
+
+---
+
+# 🧪 Completed User Stories
+
+✅ Setup & Deployment  
+✅ Global Audio Player  
+✅ Favourites System  
+✅ Recommended Carousel  
+✅ Theme Toggle  
+✅ Listening Progress (Stretch Goals)
+
+---
+
+# 👨‍💻 Author
+
+**Phillip Botha**  
+_React Developer Portfolio Project_
+
+---
+
+This project satisfies all DJSPP core requirements and stretch goals and demonstrates advanced state management, UI architecture, and production readiness.
